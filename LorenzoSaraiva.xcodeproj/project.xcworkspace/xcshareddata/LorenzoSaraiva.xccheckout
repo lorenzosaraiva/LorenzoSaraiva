@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>3653D35B-E14E-4C2C-8B21-6F13044C985E</string>
+	<key>IDESourceControlProjectName</key>
+	<string>LorenzoSaraiva</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>E34479EFB8FD02234C1018F584F2FBDF406C12BD</key>
+		<string>https://github.com/lorenzosaraiva/LorenzoSaraiva.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>LorenzoSaraiva.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>E34479EFB8FD02234C1018F584F2FBDF406C12BD</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/lorenzosaraiva/LorenzoSaraiva.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>E34479EFB8FD02234C1018F584F2FBDF406C12BD</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E34479EFB8FD02234C1018F584F2FBDF406C12BD</string>
+			<key>IDESourceControlWCCName</key>
+			<string>LorenzoSaraiva</string>
+		</dict>
+	</array>
+</dict>
+</plist>

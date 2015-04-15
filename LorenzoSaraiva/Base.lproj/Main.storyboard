@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ctl-PB-coN">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="pIe-rU-SUt">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
     </dependencies>
@@ -13,6 +13,7 @@
                         <viewControllerLayoutGuide type="bottom" id="f5P-3X-9nu"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="ZbY-Nm-eyQ">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -20,7 +21,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8O0-6R-itN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1164" y="883"/>
+            <point key="canvasLocation" x="-786" y="1643"/>
         </scene>
         <!--Item-->
         <scene sceneID="BA5-WE-kjO">
@@ -31,6 +32,7 @@
                         <viewControllerLayoutGuide type="bottom" id="YIS-s6-QfA"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="0iV-BZ-t3n">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Technical Skills" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0f6-SO-ksu">
@@ -70,12 +72,13 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fUw-2f-snT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-279" y="1336"/>
+            <point key="canvasLocation" x="249" y="1604"/>
         </scene>
         <!--Item 2-->
         <scene sceneID="JLP-Ol-0bg">
             <objects>
-                <viewController id="Xdr-Zw-MXf" sceneMemberID="viewController">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OuR-bn-Hf3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController id="Xdr-Zw-MXf" customClass="HobbiesViewController" customModule="LorenzoSaraiva" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="xFz-cH-jy8"/>
                         <viewControllerLayoutGuide type="bottom" id="BQj-tV-ftI"/>
@@ -83,11 +86,57 @@
                     <view key="view" contentMode="scaleToFill" id="DeZ-Mp-QTV">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yat-eY-YX3">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <subviews>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="c8y-Ln-oDd">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <prototypes>
+                                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="HobbieCell" id="6z7-au-vi4">
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="6z7-au-vi4" id="p6p-IP-Yjm">
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                </tableViewCellContentView>
+                                            </tableViewCell>
+                                        </prototypes>
+                                        <variation key="widthClass=compact" fixedFrame="YES">
+                                            <rect key="frame" x="0.0" y="-64" width="400" height="600"/>
+                                        </variation>
+                                    </tableView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <variation key="default">
+                                    <mask key="subviews">
+                                        <exclude reference="c8y-Ln-oDd"/>
+                                    </mask>
+                                </variation>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="0.0" y="64" width="400" height="479"/>
+                                    <mask key="subviews">
+                                        <include reference="c8y-Ln-oDd"/>
+                                    </mask>
+                                </variation>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="yat-eY-YX3"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="yat-eY-YX3"/>
+                            </mask>
+                        </variation>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item 2" id="tgz-lE-fCb"/>
+                    <connections>
+                        <outlet property="hobbiesTableView" destination="c8y-Ln-oDd" id="7vO-DV-9s2"/>
+                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="OuR-bn-Hf3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="648" y="883"/>
         </scene>
@@ -184,6 +233,7 @@
                         <viewControllerLayoutGuide type="bottom" id="A42-g2-WqT"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="M4B-ha-iLo">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -191,7 +241,27 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GKV-Np-wtI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1164" y="34"/>
+            <point key="canvasLocation" x="-390" y="-294"/>
+        </scene>
+        <!--Opening Screen View Controller-->
+        <scene sceneID="1YP-WX-40L">
+            <objects>
+                <viewController id="pIe-rU-SUt" customClass="OpeningScreenViewController" customModule="LorenzoSaraiva" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="n1h-Ur-uKk"/>
+                        <viewControllerLayoutGuide type="bottom" id="3xM-2f-AgP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="osb-uw-vgR">
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <segue destination="ctl-PB-coN" kind="show" identifier="a" id="HU0-9t-osg"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ajp-HE-2qS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1368" y="548"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="xT4-vU-U9e">
