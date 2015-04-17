@@ -10,13 +10,14 @@ import UIKit
 
 class ProfileTabViewController: UIViewController {
 
-    @IBOutlet weak var mainImage: UIImageView!
     
     var imageIndex = 1
-    let imageArray:[UIImage] = [UIImage(named: "horse.png")!, UIImage(named: "pawn.png")!, UIImage(named: "tower.png")!]
+    @IBOutlet weak var mainImage: UIImageView!
+    var imageArray:[UIImage] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        imageArray = [UIImage(named: "horse.png")!, UIImage(named: "pawn.png")!, UIImage(named: "tower.png")!]
         mainImage.image = imageArray[0]
         
         let swipe = UISwipeGestureRecognizer(target: self, action: "imageSwipe")
