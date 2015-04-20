@@ -15,12 +15,11 @@ class MainScreenViewController: UIViewController, UIScrollViewDelegate {
     var containerView: UIView!
     var greenView: UIView!
     var blueView: UIView!
+    var redView:UIView!
+    let prop: CGFloat = 0.1
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        var prop: CGFloat = 0.2
         
         scrollView.delegate = self
         scrollView.frame.size = self.view.frame.size
@@ -33,43 +32,37 @@ class MainScreenViewController: UIViewController, UIScrollViewDelegate {
         containerView.center = scrollView.convertPoint(scrollView.center, fromCoordinateSpace: scrollView.superview!)
         
         // Set up your custom view hierarchy
-        let redView = UIView(frame: CGRect(x: 0, y: 0, width: containerView.frame.size.width * prop, height: containerView.frame.size.height * prop))
+        redView = UIView(frame: CGRect(x: 0, y: 0, width: containerView.frame.size.width * prop, height: containerView.frame.size.height * prop))
         redView.backgroundColor = UIColor.redColor();
         containerView.addSubview(redView)
         redView.center = containerView.convertPoint(containerView.center, fromCoordinateSpace: containerView.superview!)
         
-        blueView = UIView(frame: CGRect(x: 0, y: 0, width: redView.frame.size.width * prop, height: redView.frame.size.height * prop))
-        blueView.backgroundColor = UIColor.blueColor();
-        redView.addSubview(blueView)
-        blueView.center = redView.convertPoint(redView.center, fromCoordinateSpace: redView.superview!)
+        drawSecondView()
         
         greenView = UIView(frame: CGRect(x: 0, y: 0, width: blueView.frame.size.width * prop, height: blueView.frame.size.height * prop))
         greenView.backgroundColor = UIColor.greenColor();
         blueView.addSubview(greenView)
         greenView.center = blueView.convertPoint(blueView.center, fromCoordinateSpace: blueView.superview!)
         
-        let label:UILabel = UILabel(frame: CGRectMake(blueView.frame.size.width/10, blueView.frame.size.height/10,blueView.frame.size.width/1.25, blueView.frame.size.height/1.25))
-        label.backgroundColor = UIColor.yellowColor()
-        blueView.addSubview(label)
-        label.text = "Meu nome é Lorenzo!"
-        label.textColor = UIColor.blueColor()
-        
-        let greenImage:UIImageView = UIImageView(frame: CGRectMake(greenView.frame.size.width/10, greenView.frame.size.height/10,greenView.frame.size.width/1.25, greenView.frame.size.height/1.25))
-        greenImage.image = UIImage(named: "horse.png")
+        let greenImage:UIImageView = UIImageView(frame: CGRectMake(0, 0,greenView.frame.size.width, greenView.frame.size.height))
+        greenImage.image = UIImage(named: "profile.png")
         greenView.addSubview(greenImage)
         
         // Tell the scroll view the size of the contents
         scrollView.contentSize = containerSize;
         
         // Set up the minimum & maximum zoom scales
-        let scrollViewFrame = scrollView.frame
-        let scaleWidth = scrollViewFrame.size.width / scrollView.contentSize.width
-        let scaleHeight = scrollViewFrame.size.height / scrollView.contentSize.height
-        let minScale = min(scaleWidth, scaleHeight)
+//        let scrollViewFrame = scrollView.frame
+//        let scaleWidth = scrollViewFrame.size.width / scrollView.contentSize.width
+//        let scaleHeight = scrollViewFrame.size.height / scrollView.contentSize.height
+//        let minScale = min(scaleWidth, scaleHeight)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: "tap")
+        scrollView.addGestureRecognizer(tapGesture)
         
         scrollView.minimumZoomScale = 1
         scrollView.maximumZoomScale = 70.0
-        scrollView.zoomScale = 5
+        scrollView.zoomScale = 30
         
         centerScrollViewContents()
     }
@@ -79,7 +72,36 @@ class MainScreenViewController: UIViewController, UIScrollViewDelegate {
 //        })
     }
     
+    func tap(){
+        
+    }
     
+    func drawSecondView(){
+        
+        blueView = UIView(frame: CGRect(x: 0, y: 0, width: redView.frame.size.width * prop, height: redView.frame.size.height * prop))
+        blueView.backgroundColor = UIColor.blueColor();
+        redView.addSubview(blueView)
+        blueView.center = redView.convertPoint(redView.center, fromCoordinateSpace: redView.superview!)
+        
+        let propSub:CGFloat = 3.7
+        let diameter:CGFloat = blueView.frame.width/propSub
+        
+        let skillsImageView: UIView = UIView(frame: CGRectMake(diameter/6, blueView.frame.height/2 + blueView.frame.height/10, diameter, diameter))
+        skillsImageView.backgroundColor = UIColor.blackColor()
+        skillsImageView.layer.cornerRadius = 1
+        blueView.addSubview(skillsImageView)
+        
+        let skillsImageViewTwo: UIView = UIView(frame: CGRectMake(diameter/3 + diameter,  blueView.frame.height/2 + blueView.frame.height/10, blueView.frame.width/propSub, blueView.frame.width/propSub))
+        skillsImageViewTwo.backgroundColor = UIColor.blackColor()
+        skillsImageViewTwo.layer.cornerRadius = 1
+        blueView.addSubview(skillsImageViewTwo)
+        
+        let skillsImageViewThree: UIView = UIView(frame: CGRectMake(diameter/2 + (2 * diameter),  blueView.frame.height/2 + blueView.frame.height/10, blueView.frame.width/propSub, blueView.frame.width/propSub))
+        skillsImageViewThree.backgroundColor = UIColor.blackColor()
+        skillsImageViewThree.layer.cornerRadius = 1
+        blueView.addSubview(skillsImageViewThree)
+    
+    }
     func centerScrollViewContents() {
         let boundsSize = scrollView.bounds.size
         var contentsFrame = containerView.frame

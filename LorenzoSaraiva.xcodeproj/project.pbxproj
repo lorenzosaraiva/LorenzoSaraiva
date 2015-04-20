@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A4B3CE31AE4759300821E82 /* profile.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A4B3CE21AE4759300821E82 /* profile.png */; };
 		0A726B8F1ADEF7FC0080BA93 /* HobbiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A726B8E1ADEF7FC0080BA93 /* HobbiesViewController.swift */; };
 		0A726B911ADEFF090080BA93 /* OpeningScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A726B901ADEFF090080BA93 /* OpeningScreenViewController.swift */; };
 		0A726BD41AE02BA60080BA93 /* Animator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A726BD31AE02BA60080BA93 /* Animator.swift */; };
@@ -35,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A4B3CE21AE4759300821E82 /* profile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profile.png; sourceTree = "<group>"; };
 		0A726B8E1ADEF7FC0080BA93 /* HobbiesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HobbiesViewController.swift; sourceTree = "<group>"; };
 		0A726B901ADEFF090080BA93 /* OpeningScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpeningScreenViewController.swift; sourceTree = "<group>"; };
 		0A726BD31AE02BA60080BA93 /* Animator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Animator.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				0AA9E8321ADD83EA00D7370F /* Views */,
 				0AA9E8101ADD821E00D7370F /* AppDelegate.swift */,
 				0AA9E8391ADD903100D7370F /* tower.png */,
+				0A4B3CE21AE4759300821E82 /* profile.png */,
 				0AA9E8171ADD821E00D7370F /* Images.xcassets */,
 				0AA9E8361ADD903100D7370F /* horse.png */,
 				0AA9E8371ADD903100D7370F /* pawn.png */,
@@ -242,6 +245,7 @@
 				0AA9E83C1ADD903100D7370F /* royalguard.png in Resources */,
 				0AA9E81B1ADD821E00D7370F /* LaunchScreen.xib in Resources */,
 				0AA9E8181ADD821E00D7370F /* Images.xcassets in Resources */,
+				0A4B3CE31AE4759300821E82 /* profile.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
