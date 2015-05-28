@@ -7,68 +7,147 @@
 //
 
 import UIKit
+import MapKit
 
-class MainScreenViewController: UIViewController, UIScrollViewDelegate {
+class MainScreenViewController: UIViewController, UIScrollViewDelegate, MKMapViewDelegate {
 
 
     @IBOutlet weak var scrollView: UIScrollView!
+    
+    //MARK: - Main control variables
+    
     var viewHierarchy:[UIView] = []
-    var imageArray:[UIImageView] = []
-    var hobbiesArray:[UIImageView] = []
-    var containerView: UIView!
-    var greenView: UIView!
-    var blueView: UIView!
-    var redView:UIView!
     var currentViewIndex:Int = 0
+    let font = UIFont(name: "Euphemia UCAS", size: 16)
     let prop: CGFloat = 0.01
-    var isSkillViewZoomed:Bool = false
-    var isHobbieViewZoomed:Bool = false
-    var zoomedView: UIView!
-    var hobbieZoomedView: UIView!
+    
+    
+    //MARK: - Presentation and MapView variables
+    
+    var presentationMapView: UIView!
+    var blackView:UIView!
+    
+    //MARK: - Education and Skills view variables
+    
+    var skillsArray:[UIImageView] = []
+    var educationSkillView: UIView!
     var originalFrame:CGRect!
+    var isSkillViewZoomed:Bool = false
+    var skillZoomedView: UIView!
+
+
+    //MARK: - Hobbies and Projects view variables
+    
+    
+    var hobbiesProjectsView:UIView!
+    
+    var isHobbieViewZoomed:Bool = false
+    var hobbieZoomedView: UIView!
     var hobbieOriginalFrame:CGRect!
+    var hobbiesArray:[UIImageView] = []
+    
+    var isProjectViewZoomed:Bool = false
+    var projectZoomedView:UIView!
+    var projectOriginalFrame:CGRect!
+    var projectArray:[UIImageView] = []
+    
+    //MARK: - Profile view variables
+    
+    var profileView: UIImageView!
+    
+    
+
+    //MARK: - Default functions
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        drawBlackView()
+        
+        setScrollView()
+        
+        drawPresentationView()
+        
+        drawEducationSkillView()
+
+        drawHobbiesEducationView()
+        
+        drawProfileView()
+        
+        createGestureRecognizers()
+        
+        centerScrollViewContents()
+    }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        scrollView.setZoomScale(0.003, animated: false)
+        blackView.removeFromSuperview()
+
+    }
+    //MARK: - Scroll view control functions
+    
+    func setScrollView(){
         
         scrollView.delegate = self
         scrollView.frame.size = self.view.frame.size
         viewHierarchy.append(scrollView)
         scrollView.scrollEnabled = false
+        scrollView.minimumZoomScale = 0.001
+        scrollView.maximumZoomScale = 1000000
+        self.view.bringSubviewToFront(scrollView)
+        currentViewIndex = 0
 
-        self.view.backgroundColor = UIColor.blackColor()
-        // Set up the container view to hold your custom view hierarchy
-        let containerSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height)
-        containerView = UIView(frame: CGRect(origin: CGPoint(x: 0, y: 0), size:containerSize))
-        containerView.backgroundColor = UIColor.whiteColor()
-        scrollView.addSubview(containerView)
-        containerView.center = scrollView.convertPoint(scrollView.center, fromCoordinateSpace: scrollView.superview!)
-        viewHierarchy.append(containerView)
-        
-        
-        drawThirdView()
-        
-        drawSecondView()
-        
-        greenView = UIView(frame: CGRect(x: 0, y: 0, width: blueView.frame.size.width * prop, height: blueView.frame.size.height * prop))
-        greenView.backgroundColor = UIColor.greenColor();
-        blueView.addSubview(greenView)
-        greenView.center = blueView.convertPoint(blueView.center, fromCoordinateSpace: blueView.superview!)
-        viewHierarchy.append(greenView)
-        
-        let greenImage:UIImageView = UIImageView(frame: CGRectMake(0, 0,greenView.frame.size.width, greenView.frame.size.height))
-        greenImage.image = UIImage(named: "profile.png")
-        greenView.addSubview(greenImage)
 
+    }
+    
+    func centerScrollViewContents() {
+        let boundsSize = scrollView.bounds.size
+        var contentsFrame = presentationMapView.frame
         
-        // Tell the scroll view the size of the contents
-        scrollView.contentSize = containerSize;
+        if contentsFrame.size.width < boundsSize.width {
+            contentsFrame.origin.x = (boundsSize.width - contentsFrame.size.width) / 2.0
+        } else {
+            contentsFrame.origin.x = 0.0
+        }
         
-        // Set up the minimum & maximum zoom scales
-//        let scrollViewFrame = scrollView.frame
-//        let scaleWidth = scrollViewFrame.size.width / scrollView.contentSize.width
-//        let scaleHeight = scrollViewFrame.size.height / scrollView.contentSize.height
-//        let minScale = min(scaleWidth, scaleHeight)
+        if contentsFrame.size.height < boundsSize.height {
+            contentsFrame.origin.y = (boundsSize.height - contentsFrame.size.height) / 2.0
+        } else {
+            contentsFrame.origin.y = 0.0
+        }
+        
+        presentationMapView.frame = contentsFrame
+    }
+    
+    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+        return presentationMapView
+    }
+    
+    func scrollViewDidZoom(scrollView: UIScrollView) {
+        centerScrollViewContents()
+    
+        if (scrollView.zoomScale < 1){
+            currentViewIndex = 0
+        }
+        if (scrollView.zoomScale >= 1){
+            currentViewIndex = 1
+        }
+        if (scrollView.zoomScale >= 100){
+            currentViewIndex = 2
+        }
+        if (scrollView.zoomScale >= 10000){
+            currentViewIndex = 3
+        }
+        if (scrollView.zoomScale >= 1000000){
+            currentViewIndex = 4
+        }
+    }
+    
+    func createGestureRecognizers(){
         
         var swipeLeft = UISwipeGestureRecognizer(target: self, action: "zoomIn")
         swipeLeft.direction = UISwipeGestureRecognizerDirection.Left
@@ -78,89 +157,201 @@ class MainScreenViewController: UIViewController, UIScrollViewDelegate {
         swipeRight.direction = UISwipeGestureRecognizerDirection.Right
         scrollView.addGestureRecognizer(swipeRight)
         
-        scrollView.minimumZoomScale = 0.001
-        scrollView.maximumZoomScale = 1000000
-        scrollView.zoomScale = 1
-        currentViewIndex = 0
-        
-        centerScrollViewContents()
-    }
-    override func viewDidAppear(animated: Bool) {
-//        UIView.animateWithDuration(2, animations: {
-//            self.containerView.backgroundColor = UIColor.blueColor()
-//        })
     }
     
+    //MARK: - Zoom control functions
+    
+    
     func zoomIn(){
-       
+        
         if (currentViewIndex < viewHierarchy.count - 1){
-        let rectToZoom:CGRect = containerView.convertRect(viewHierarchy[currentViewIndex + 1].frame, fromCoordinateSpace:viewHierarchy[currentViewIndex + 1].superview!)
-        currentViewIndex++
-        scrollView.zoomToRect(rectToZoom, animated: true)
+            let rectToZoom:CGRect = presentationMapView.convertRect(viewHierarchy[currentViewIndex + 1].frame, fromCoordinateSpace:viewHierarchy[currentViewIndex + 1].superview!)
+            currentViewIndex++
+            scrollView.zoomToRect(rectToZoom, animated: true)
         }
-
+        
     }
     
     func zoomOut(){
         
         if (currentViewIndex > 1){
-            let rectToZoom:CGRect = containerView.convertRect(viewHierarchy[currentViewIndex-1].frame, fromCoordinateSpace: viewHierarchy[currentViewIndex-1].superview!)
+            let rectToZoom:CGRect = presentationMapView.convertRect(viewHierarchy[currentViewIndex-1].frame, fromCoordinateSpace: viewHierarchy[currentViewIndex-1].superview!)
             currentViewIndex--
             scrollView.zoomToRect(rectToZoom, animated: true)
         }
     }
+    
+    //MARK: - Black view functions
+    
+    func drawBlackView(){
+    
+        self.view.backgroundColor = UIColor.blackColor()
+        
+        let titleFont = UIFont(name: "Euphemia UCAS", size: 25)
+        
+        var firstViewLabel = UILabel(frame: CGRectMake(self.view.frame.width*0.05, self.view.frame.height*0.1, self.view.frame.width, self.view.frame.height*0.1))
+        firstViewLabel.font = titleFont
+        firstViewLabel.textColor = UIColor.whiteColor()
+        firstViewLabel.text = "Can't see?"
+        firstViewLabel.alpha = 0.0
+        self.view.addSubview(firstViewLabel)
+        
+        var secondViewLabel = UILabel(frame: CGRectMake(self.view.frame.width*0.15, self.view.frame.height*0.2, self.view.frame.width, self.view.frame.height*0.1))
+        secondViewLabel.font = titleFont
+        secondViewLabel.textColor = UIColor.whiteColor()
+        secondViewLabel.text = "Maybe you should..."
+        secondViewLabel.alpha = 0.0
+        self.view.addSubview(secondViewLabel)
+        
+        var thirdViewLabel = UILabel(frame: CGRectMake(self.view.frame.width*0.25, self.view.frame.height*0.3, self.view.frame.width, self.view.frame.height*0.1))
+        thirdViewLabel.font = titleFont
+        thirdViewLabel.textColor = UIColor.whiteColor()
+        thirdViewLabel.text = "Zoom in a bit..."
+        thirdViewLabel.alpha = 0.0
+        self.view.addSubview(thirdViewLabel)
+        
+        UIView.animateWithDuration(1.5, animations: {() -> Void in
+            firstViewLabel.alpha = 1.0
+            
+            return
+            },completion:{finished in
+                UIView.animateWithDuration(1.5, animations: {() -> Void in
+                    secondViewLabel.alpha = 1.0
+                    
+                    return
+                    },completion:{finished in
+                        UIView.animateWithDuration(1.5, animations: {() -> Void in
+                            thirdViewLabel.alpha = 1.0
+                            
+                            return
+                        })
+                })
+                
+        })
+
+    
+    }
+    
+    //MARK: - Presentation and Map view functions
+    
+    func drawPresentationView(){
+        
+        let containerSize = CGSizeMake(scrollView.frame.size.width, scrollView.frame.size.height)
+        presentationMapView = UIView(frame: CGRect(origin: CGPoint(x: 0, y: 0), size:containerSize))
+        presentationMapView.backgroundColor = UIColor.whiteColor()
+        presentationMapView.layer.cornerRadius = 20
+        scrollView.addSubview(presentationMapView)
+        presentationMapView.center = scrollView.convertPoint(scrollView.center, fromCoordinateSpace: scrollView.superview!)
+        viewHierarchy.append(presentationMapView)
+        
+        blackView = UIView(frame: presentationMapView.frame)
+        blackView.backgroundColor = UIColor.blackColor()
+        presentationMapView.addSubview(blackView)
+        
+        var presentationTextView = UITextView(frame: CGRectMake(presentationMapView.frame.width * 0.1, presentationMapView.frame.height * 0.05, presentationMapView.frame.width * 0.8, presentationMapView.frame.height*0.45))
+        presentationTextView.text = "Hello! Welcome to my app. In this app you will go to depths never explored in the Iphone while getting to know about me! The app is pretty simple: just keep zooming in the center of the screen the explore the tiniest bits of the Iphone, or swipe left and right to navigate the screens."
+        presentationTextView.userInteractionEnabled = false
+        presentationTextView.font = font
+        presentationMapView.addSubview(presentationTextView)
+        
+        var mapLabel = UILabel(frame: CGRectMake(presentationMapView.frame.width * 0.15, presentationMapView.frame.height * 0.52, presentationMapView.frame.width*0.85, presentationMapView.frame.height*0.1))
+        mapLabel.text = "Where I am right now!"
+        mapLabel.font = font
+        presentationMapView.addSubview(mapLabel)
+        
+        var mapView = MKMapView(frame: CGRectMake(self.presentationMapView.frame.width*0.05, presentationMapView.frame.height*0.62, presentationMapView.frame.width*0.9, presentationMapView.frame.height*0.35))
+        mapView.delegate = self
+        mapView.userInteractionEnabled = false
+        presentationMapView.addSubview(mapView)
+        
+         var myLocationRef = Firebase(url:"https://sizzling-inferno-6992.firebaseio.com/MyLocation")
+        
+        myLocationRef.observeEventType(.Value, withBlock: { snapshot in
+            let latitude = snapshot.value["latitude"]
+            let longitude = snapshot.value["longitude"]
+            var centerLocation = CLLocationCoordinate2DMake(latitude as! CLLocationDegrees,longitude as! CLLocationDegrees
+            )
+            var mapSpan = MKCoordinateSpanMake(0.01, 0.01)
+            var mapRegion = MKCoordinateRegionMake(centerLocation, mapSpan)
+            mapView.setRegion(mapRegion, animated: true)
+            var point = MKPointAnnotation()
+            point.coordinate = centerLocation
+            mapView.addAnnotation(point)
+        })
+
+        var myRootRef = Firebase(url:"https://sizzling-inferno-6992.firebaseio.com")
+        myRootRef.observeEventType(.ChildChanged, withBlock: { snapshot in
+            let latitude: AnyObject? = snapshot.value.objectForKey("latitude")
+            let longitude: AnyObject? = snapshot.value.objectForKey("longitude")
+            var centerLocation = CLLocationCoordinate2DMake(latitude as! CLLocationDegrees,longitude as! CLLocationDegrees
+            )
+            var mapSpan = MKCoordinateSpanMake(0.01, 0.01)
+            var mapRegion = MKCoordinateRegionMake(centerLocation, mapSpan)
+            mapView.setRegion(mapRegion, animated: true)
+            var point = MKPointAnnotation()
+            point.coordinate = centerLocation
+            mapView.addAnnotation(point)
+        })
+        
+       
+        presentationMapView.bringSubviewToFront(blackView)
+
+    
+    }
+    
+    //MARK: - Skills and Education view functions
 
     func zoomSkillView(sender:UITapGestureRecognizer){
         
         if (isSkillViewZoomed){
-            if (sender.view == zoomedView){
+            if (sender.view == skillZoomedView){
                 
-                UIView.animateWithDuration(2, animations: {() -> Void in
+                UIView.animateWithDuration(0.5, animations: {() -> Void in
                     sender.view?.frame = self.originalFrame
                     
                     return
                 })
                 
-                UIView.animateWithDuration(2, animations: {() -> Void in
+                UIView.animateWithDuration(0.5, animations: {() -> Void in
                     sender.view?.alpha = 0.5
                     
                     return
                     }, completion:{finished in
-                        if (self.zoomedView == self.imageArray[0])
+                        if (self.skillZoomedView == self.skillsArray[0])
                         {
-                        self.imageArray[0].image = UIImage(named: "c")
+                        self.skillsArray[0].image = UIImage(named: "c")
                         }
-                        if (self.zoomedView == self.imageArray[1])
+                        if (self.skillZoomedView == self.skillsArray[1])
                         {
-                            self.imageArray[1].image = UIImage(named: "csharp")
+                            self.skillsArray[1].image = UIImage(named: "csharp")
                         }
-                        if (self.zoomedView == self.imageArray[2])
+                        if (self.skillZoomedView == self.skillsArray[2])
                         {
-                            self.imageArray[2].image = UIImage(named: "objc")
+                            self.skillsArray[2].image = UIImage(named: "objc")
                         }
-                        if (self.zoomedView == self.imageArray[3])
+                        if (self.skillZoomedView == self.skillsArray[3])
                         {
-                            self.imageArray[3].image = UIImage(named: "swift")
+                            self.skillsArray[3].image = UIImage(named: "swift")
                         }
-                        if (self.zoomedView == self.imageArray[4])
+                        if (self.skillZoomedView == self.skillsArray[4])
                         {
-                            self.imageArray[4].image = UIImage(named: "html")
+                            self.skillsArray[4].image = UIImage(named: "html")
                         }
-                        if (self.zoomedView == self.imageArray[5])
+                        if (self.skillZoomedView == self.skillsArray[5])
                         {
-                            self.imageArray[5].image = UIImage(named: "java")
+                            self.skillsArray[5].image = UIImage(named: "java")
                         }
-                        if (self.zoomedView == self.imageArray[6])
+                        if (self.skillZoomedView == self.skillsArray[6])
                         {
-                            self.imageArray[6].image = UIImage(named: "php")
+                            self.skillsArray[6].image = UIImage(named: "php")
                         }
-                        if (self.zoomedView == self.imageArray[7])
+                        if (self.skillZoomedView == self.skillsArray[7])
                         {
-                            self.imageArray[7].image = UIImage(named: "terminal")
+                            self.skillsArray[7].image = UIImage(named: "terminal")
                         }
-                        if (self.zoomedView == self.imageArray[8])
+                        if (self.skillZoomedView == self.skillsArray[8])
                         {
-                            self.imageArray[8].image = UIImage(named: "github")
+                            self.skillsArray[8].image = UIImage(named: "github")
                         }
                 })
                 isSkillViewZoomed = false
@@ -169,86 +360,82 @@ class MainScreenViewController: UIViewController, UIScrollViewDelegate {
         }
         else{
         originalFrame = sender.view?.frame
-        blueView.bringSubviewToFront(sender.view!)
-        UIView.animateWithDuration(1, animations: {() -> Void in
-            
-            sender.view?.transform = CGAffineTransformMakeRotation(0)
-            return
-        })
+        educationSkillView.bringSubviewToFront(sender.view!)
+           
         
-        UIView.animateWithDuration(2, animations: {() -> Void in
-            sender.view?.frame = CGRectMake(0, (self.blueView.frame.height*12)/20, self.blueView.frame.width, (self.blueView.frame.height*7)/20)
+        UIView.animateWithDuration(1, animations: {() -> Void in
+            sender.view?.frame = CGRectMake(0, self.educationSkillView.frame.height*0.6, self.educationSkillView.frame.width, self.educationSkillView.frame.height*0.4)
             
             
             return
             }, completion:{finished in
-                if (self.zoomedView == self.imageArray[0])
+                if (self.skillZoomedView == self.skillsArray[0])
                 {
-                    self.imageArray[0].image = UIImage(named: "ctext")
+                    self.skillsArray[0].image = UIImage(named: "ctext")
                 }
-                if (self.zoomedView == self.imageArray[1])
+                if (self.skillZoomedView == self.skillsArray[1])
                 {
-                    self.imageArray[1].image = UIImage(named: "csharptext")
+                    self.skillsArray[1].image = UIImage(named: "csharptext")
                 }
-                if (self.zoomedView == self.imageArray[2])
+                if (self.skillZoomedView == self.skillsArray[2])
                 {
-                    self.imageArray[2].image = UIImage(named: "objctext")
+                    self.skillsArray[2].image = UIImage(named: "objctext")
                 }
-                if (self.zoomedView == self.imageArray[3])
+                if (self.skillZoomedView == self.skillsArray[3])
                 {
-                    self.imageArray[3].image = UIImage(named: "swifttext")
+                    self.skillsArray[3].image = UIImage(named: "swifttext")
                 }
-                if (self.zoomedView == self.imageArray[4])
+                if (self.skillZoomedView == self.skillsArray[4])
                 {
-                    self.imageArray[4].image = UIImage(named: "htmltext")
+                    self.skillsArray[4].image = UIImage(named: "htmltext")
                 }
-                if (self.zoomedView == self.imageArray[5])
+                if (self.skillZoomedView == self.skillsArray[5])
                 {
-                    self.imageArray[5].image = UIImage(named: "javatext")
+                    self.skillsArray[5].image = UIImage(named: "javatext")
                 }
-                if (self.zoomedView == self.imageArray[6])
+                if (self.skillZoomedView == self.skillsArray[6])
                 {
-                    self.imageArray[6].image = UIImage(named: "phptext")
+                    self.skillsArray[6].image = UIImage(named: "phptext")
                 }
-                if (self.zoomedView == self.imageArray[7])
+                if (self.skillZoomedView == self.skillsArray[7])
                 {
-                    self.imageArray[7].image = UIImage(named: "terminaltext")
+                    self.skillsArray[7].image = UIImage(named: "terminaltext")
                 }
-                if (self.zoomedView == self.imageArray[8])
+                if (self.skillZoomedView == self.skillsArray[8])
                 {
-                    self.imageArray[8].image = UIImage(named: "githubtext")
+                    self.skillsArray[8].image = UIImage(named: "githubtext")
                 }
             })
             isSkillViewZoomed = true
-            zoomedView = sender.view
+            skillZoomedView = sender.view
             
         }
         
     }
     
-    func drawSecondView(){
+    func drawEducationSkillView(){
         
-        blueView = UIView(frame: CGRect(x: 0, y: 0, width: redView.frame.size.width * prop, height: redView.frame.size.height * prop))
-        redView.addSubview(blueView)
-        blueView.center = redView.convertPoint(redView.center, fromCoordinateSpace: redView.superview!)
-        viewHierarchy.append(blueView)
+        educationSkillView = UIView(frame: CGRect(x: 0, y: 0, width: presentationMapView.frame.size.width * prop, height: presentationMapView.frame.size.height * prop))
+        presentationMapView.addSubview(educationSkillView)
+        educationSkillView.center = presentationMapView.convertPoint(presentationMapView.center, fromCoordinateSpace: presentationMapView.superview!)
+        viewHierarchy.append(educationSkillView)
         
         
-        let educationImageView:UIImageView = UIImageView(frame: CGRectMake(blueView.frame.width/10, blueView.frame.height/20, blueView.frame.width*0.8, blueView.frame.height/12))
+        let educationImageView:UIImageView = UIImageView(frame: CGRectMake(educationSkillView.frame.width/10, educationSkillView.frame.height/20, educationSkillView.frame.width*0.8, educationSkillView.frame.height/12))
         educationImageView.image = UIImage(named: "educationtitle")
-        blueView.addSubview(educationImageView)
+        educationSkillView.addSubview(educationImageView)
         
-        let educationText:UIImageView = UIImageView(frame: CGRectMake(0, blueView.frame.height/8, blueView.frame.width, blueView.frame.height*0.4))
+        let educationText:UIImageView = UIImageView(frame: CGRectMake(0, educationSkillView.frame.height/8, educationSkillView.frame.width, educationSkillView.frame.height*0.4))
         educationText.image = UIImage(named: "educationtext")
-        blueView.addSubview(educationText)
+        educationSkillView.addSubview(educationText)
         
-        let programmingSkills:UIImageView = UIImageView(frame: CGRectMake(blueView.frame.width/10, blueView.frame.height*0.52, blueView.frame.width*0.8, blueView.frame.height/15))
+        let programmingSkills:UIImageView = UIImageView(frame: CGRectMake(educationSkillView.frame.width/10, educationSkillView.frame.height*0.52, educationSkillView.frame.width*0.8, educationSkillView.frame.height/15))
         programmingSkills.image = UIImage(named: "programmingskills")
-        blueView.addSubview(programmingSkills)
+        educationSkillView.addSubview(programmingSkills)
         
         let propSub:CGFloat = 5
-        let diameter:CGFloat = blueView.frame.width/propSub
-        var baseY:CGFloat = blueView.frame.height/2 + blueView.frame.height/20 + diameter/4
+        let diameter:CGFloat = educationSkillView.frame.width/propSub
+        var baseY:CGFloat = educationSkillView.frame.height/2 + educationSkillView.frame.height/20 + diameter/4
         var baseX:CGFloat = diameter/2
         
         for var indexOut = 0; indexOut < 3; indexOut+=1{
@@ -258,8 +445,8 @@ class MainScreenViewController: UIViewController, UIScrollViewDelegate {
                 let skillsImageView: UIImageView = UIImageView(frame: CGRectMake(baseX, baseY, diameter, diameter))
                 skillsImageView.userInteractionEnabled = true
                 
-                blueView.addSubview(skillsImageView)
-                imageArray.append(skillsImageView)
+                educationSkillView.addSubview(skillsImageView)
+                skillsArray.append(skillsImageView)
                 
                 let tapGesture = UITapGestureRecognizer(target: self, action: "zoomSkillView:")
                 skillsImageView.addGestureRecognizer(tapGesture)
@@ -269,69 +456,80 @@ class MainScreenViewController: UIViewController, UIScrollViewDelegate {
             baseY = baseY + diameter/4 + diameter
             baseX = diameter/2
         }
-        imageArray[0].image = UIImage(named: "c")
-        imageArray[1].image = UIImage(named: "csharp")
-        imageArray[2].image = UIImage(named: "objc")
-        imageArray[3].image = UIImage(named: "swift")
-        imageArray[4].image = UIImage(named: "html")
-        imageArray[5].image = UIImage(named: "java")
-        imageArray[6].image = UIImage(named: "php")
-        imageArray[7].image = UIImage(named: "terminal")
-        imageArray[8].image = UIImage(named: "github")
+        skillsArray[0].image = UIImage(named: "c")
+        skillsArray[1].image = UIImage(named: "csharp")
+        skillsArray[2].image = UIImage(named: "objc")
+        skillsArray[3].image = UIImage(named: "swift")
+        skillsArray[4].image = UIImage(named: "html")
+        skillsArray[5].image = UIImage(named: "java")
+        skillsArray[6].image = UIImage(named: "php")
+        skillsArray[7].image = UIImage(named: "terminal")
+        skillsArray[8].image = UIImage(named: "github")
       
 
     }
     
-    func drawThirdView(){
+    //MARK: - Hobbies and Projects functions
     
-        redView = UIView(frame: CGRect(x: 0, y: 0, width: containerView.frame.size.width * prop, height: containerView.frame.size.height * prop))
-        redView.backgroundColor = UIColor.whiteColor()
-        containerView.addSubview(redView)
-        redView.center = containerView.convertPoint(containerView.center, fromCoordinateSpace: containerView.superview!)
-        viewHierarchy.append(redView)
+    func  drawHobbiesEducationView(){
+    
+        hobbiesProjectsView = UIView(frame: CGRect(x: 0, y: 0, width: educationSkillView.frame.size.width * prop, height: educationSkillView.frame.size.height * prop))
+        educationSkillView.backgroundColor = UIColor.whiteColor()
+        educationSkillView.addSubview(hobbiesProjectsView)
+        hobbiesProjectsView.center = educationSkillView.convertPoint(educationSkillView.center, fromCoordinateSpace: educationSkillView.superview!)
+        viewHierarchy.append(hobbiesProjectsView)
         
-        var hobbiesLabel = UIImageView(frame: CGRectMake(0, redView.frame.height/25, redView.frame.width, redView.frame.height/20))
+        var hobbiesLabel = UIImageView(frame: CGRectMake(0, hobbiesProjectsView.frame.height/25, hobbiesProjectsView.frame.width, hobbiesProjectsView.frame.height/20))
         hobbiesLabel.image = UIImage(named: "hobbiestitle")
-        redView.addSubview(hobbiesLabel)
+        hobbiesProjectsView.addSubview(hobbiesLabel)
 
         
-        var projectsLabel = UIImageView(frame: CGRectMake(0, redView.frame.height*0.53, redView.frame.width, redView.frame.height/20))
+        var projectsLabel = UIImageView(frame: CGRectMake(0, hobbiesProjectsView.frame.height*0.53, hobbiesProjectsView.frame.width, hobbiesProjectsView.frame.height/20))
         projectsLabel.image = UIImage(named: "projectstitle")
-        redView.addSubview(projectsLabel)
+        hobbiesProjectsView.addSubview(projectsLabel)
         
-        var firstProject = UIImageView(frame: CGRectMake(0, redView.frame.height * 0.6, redView.frame.width * 0.5 , redView.frame.height * 0.4))
+        var firstProject = UIImageView(frame: CGRectMake(0, hobbiesProjectsView.frame.height * 0.6, hobbiesProjectsView.frame.width * 0.5 , hobbiesProjectsView.frame.height * 0.4))
         firstProject.image = UIImage(named: "orbilis")
-        redView.addSubview(firstProject)
+        firstProject.userInteractionEnabled = true
+        let orbilisTapGesture = UITapGestureRecognizer(target: self, action: "tapProject:")
+        firstProject.addGestureRecognizer(orbilisTapGesture)
+        hobbiesProjectsView.addSubview(firstProject)
+        projectArray.append(firstProject)
         
-        var secondProject = UIImageView(frame: CGRectMake(redView.frame.width * 0.5, redView.frame.height * 0.6, redView.frame.width * 0.5 , redView.frame.height * 0.4))
-        secondProject.image = UIImage(named: "orbilis")
-        redView.addSubview(secondProject)
+        var secondProject = UIImageView(frame: CGRectMake(hobbiesProjectsView.frame.width * 0.5, hobbiesProjectsView.frame.height * 0.6, hobbiesProjectsView.frame.width * 0.5 , hobbiesProjectsView.frame.height * 0.4))
+        secondProject.image = UIImage(named: "bepidgo")
+        secondProject.userInteractionEnabled = true
+        let bepidGoTapGesture = UITapGestureRecognizer(target: self, action: "tapProject:")
+        secondProject.addGestureRecognizer(bepidGoTapGesture)
+        hobbiesProjectsView.addSubview(secondProject)
+        projectArray.append(secondProject)
+
         
         
-        var baseX = redView.frame.width/10
+        var baseX = hobbiesProjectsView.frame.width/10
         var currentX = baseX
-        var squareSide = redView.frame.width/5
+        var squareSide = hobbiesProjectsView.frame.width/5
         for var index = 0; index < 3; index+=1{
             
-        var hobbieView = UIImageView(frame: CGRectMake(currentX, redView.frame.height/10, squareSide, squareSide))
+        var hobbieView = UIImageView(frame: CGRectMake(currentX, hobbiesProjectsView.frame.height/10, squareSide, squareSide))
         hobbieView.userInteractionEnabled = true
         hobbiesArray.append(hobbieView)
-        redView.addSubview(hobbieView)
+        hobbiesProjectsView.addSubview(hobbieView)
         let tapGesture = UITapGestureRecognizer(target: self, action: "zoomHobbie:")
         hobbieView.addGestureRecognizer(tapGesture)
         currentX = currentX + baseX + squareSide
         
         }
-        baseX = redView.frame.width/5
+        baseX = hobbiesProjectsView.frame.width/5
         currentX = baseX
-        var baseY =  redView.frame.height/7 + squareSide
+        var baseY =  hobbiesProjectsView.frame.height/7 + squareSide
         for var index = 0; index < 2; index+=1{
             for var subIndex = 0; subIndex < 2; subIndex+=1{
                 
             var hobbieView = UIImageView(frame: CGRectMake(currentX, baseY, squareSide, squareSide))
             hobbieView.userInteractionEnabled = true
             hobbiesArray.append(hobbieView)
-            redView.addSubview(hobbieView)
+            hobbiesProjectsView.addSubview(hobbieView)
             let tapGesture = UITapGestureRecognizer(target: self, action: "zoomHobbie:")
             hobbieView.addGestureRecognizer(tapGesture)
             
@@ -339,7 +537,7 @@ class MainScreenViewController: UIViewController, UIScrollViewDelegate {
             
             }
             currentX = baseX
-            baseY = baseY + squareSide + redView.frame.height/30
+            baseY = baseY + squareSide + hobbiesProjectsView.frame.height/30
         }
         
         hobbiesArray[0].image = UIImage(named: "games")
@@ -354,11 +552,44 @@ class MainScreenViewController: UIViewController, UIScrollViewDelegate {
         
     
     }
-    
-    func zoomHobbie(sender:UITapGestureRecognizer){
+
+    func tapProject(sender:UITapGestureRecognizer){
+        if (isProjectViewZoomed){
+            UIView.animateWithDuration(0.5, animations: {() -> Void in
+                sender.view?.frame = self.projectOriginalFrame
+                return
+                },completion:{finished in
+                    if (self.projectZoomedView == self.projectArray[0]){
+                        self.projectArray[0].image = UIImage(named: "orbilis")
+                    }
+                    if (self.projectZoomedView == self.projectArray[1]){
+                        self.projectArray[1].image = UIImage(named: "bepidgo")
+                    }
+            })
+            isProjectViewZoomed = false
+        }else{
+            projectZoomedView = sender.view
+            projectOriginalFrame = sender.view?.frame
+            UIView.animateWithDuration(0.5, animations: {() -> Void in
+                sender.view?.frame = CGRectMake(0, 0, self.hobbiesProjectsView.frame.width, self.hobbiesProjectsView.frame.height)
+                sender.view?.superview?.bringSubviewToFront(sender.view!)
+                return
+                },completion:{finished in
+                    if (self.projectZoomedView == self.projectArray[0]){
+                        self.projectArray[0].image = UIImage(named: "orbilisdetails")
+                    }
+                    if (self.projectZoomedView == self.projectArray[1]){
+                        self.projectArray[1].image = UIImage(named: "bepidgodetails")
+                    }
+            })
+            isProjectViewZoomed = true
+        }
+    }
+
+       func zoomHobbie(sender:UITapGestureRecognizer){
         if(isHobbieViewZoomed){
-            UIView.animateWithDuration(1, animations: {() -> Void in
-                
+            UIView.animateWithDuration(0.5, animations: {() -> Void in
+                sender.view?.alpha = 0.5
                 sender.view?.frame = self.hobbieOriginalFrame
                 return
                 }, completion:{finished in
@@ -394,11 +625,11 @@ class MainScreenViewController: UIViewController, UIScrollViewDelegate {
             isHobbieViewZoomed = false
         }else{
         hobbieOriginalFrame = sender.view?.frame
-        redView.bringSubviewToFront(sender.view!)
+        hobbiesProjectsView.bringSubviewToFront(sender.view!)
         UIView.animateWithDuration(1, animations: {() -> Void in
             
-            sender.view?.frame = CGRectMake(0, self.redView.frame.height/12
-                , self.redView.frame.width, self.redView.frame.height*0.45)
+            sender.view?.frame = CGRectMake(0, self.hobbiesProjectsView.frame.height/12
+                , self.hobbiesProjectsView.frame.width, self.hobbiesProjectsView.frame.height*0.45)
             return
             }, completion:{finished in
                 if (self.hobbieZoomedView == self.hobbiesArray[0])
@@ -435,36 +666,16 @@ class MainScreenViewController: UIViewController, UIScrollViewDelegate {
     }
     
     }
+    //MARK: - Profile Functions
     
-    func centerScrollViewContents() {
-        let boundsSize = scrollView.bounds.size
-        var contentsFrame = containerView.frame
+    func drawProfileView(){
         
-        if contentsFrame.size.width < boundsSize.width {
-            contentsFrame.origin.x = (boundsSize.width - contentsFrame.size.width) / 2.0
-        } else {
-            contentsFrame.origin.x = 0.0
-        }
+        profileView = UIImageView(frame: CGRect(x: 0, y: 0, width: hobbiesProjectsView.frame.size.width * prop, height: hobbiesProjectsView.frame.size.height * prop))
+        hobbiesProjectsView.addSubview(profileView)
+        profileView.center = hobbiesProjectsView.convertPoint(hobbiesProjectsView.center, fromCoordinateSpace: hobbiesProjectsView.superview!)
+        profileView.image = UIImage(named: "profile")
+        viewHierarchy.append(profileView)
         
-        if contentsFrame.size.height < boundsSize.height {
-            contentsFrame.origin.y = (boundsSize.height - contentsFrame.size.height) / 2.0
-        } else {
-            contentsFrame.origin.y = 0.0
-        }
-        
-        containerView.frame = contentsFrame
     }
-    
-    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
-        return containerView
-    }
-    
-    func scrollViewDidZoom(scrollView: UIScrollView) {
-        centerScrollViewContents()
-    }
-    override func prefersStatusBarHidden() -> Bool {
-        return true
-    }
-    
 }
     
